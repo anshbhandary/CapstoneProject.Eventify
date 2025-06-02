@@ -1,0 +1,95 @@
+<div class="container-fluid p-0 main-container">
+  <!-- Main content with padding to offset the fixed navbar -->
+  <div class="container-fluid pt-4 mt-4">
+    <div class="row g-0">
+      <!-- Left section (70%) -->
+      <div class="col-lg-7 px-4">
+        <!-- Search panel with card styling -->
+        <div class="search-panel card p-4 mb-4">
+          <h3 class="mb-4 text-primary"><i class="bi bi-search"></i> Find Places</h3>
+          
+          <!-- Error messages -->
+          <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+            {{ errorMessage }}
+          </div>
+
+          <!-- Loading indicator -->
+          <div *ngIf="isLoading" class="text-center my-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Searching for places...</p>
+          </div>
+
+          <!-- Search inputs -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="locationSelect" class="form-label">Select location</label>
+              <select id="locationSelect" class="form-select" (change)="onLocationChange($event)">
+                <option value="" disabled selected>Choose location...</option>
+                <option *ngFor="let loc of predefinedLocations" [value]="loc.lat + ',' + loc.lon">
+                  {{ loc.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="categorySelect" class="form-label">Select category</label>
+              <select id="categorySelect" class="form-select" [(ngModel)]="selectedCategory">
+                <option value="" disabled selected>Choose category...</option>
+                <option *ngFor="let cat of predefinedCategories" [value]="cat.code">
+                  {{ cat.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <button class="btn btn-primary w-100 py-2" (click)="searchPlaces()" [disabled]="!selectedCategory || !lat || !lon">
+                <i class="bi bi-search"></i> Search Places
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results section -->
+        <div class="results-section">
+          <!-- No results message -->
+          <div *ngIf="results.length === 0 && !isLoading && !errorMessage" class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No places found. Try a different search.
+          </div>
+
+          <!-- Results list -->
+          <div class="results-container">
+            <div class="card result-card mb-3" *ngFor="let place of results" (click)="focusOnMarker(place)">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h5 class="card-title text-primary">{{ place.properties.name || 'Unnamed Place' }}</h5>
+                    <p class="card-text text-muted mb-1">
+                      <i class="bi bi-tags"></i> {{ place.properties.categories?.join(', ') }}
+                    </p>
+                    <p class="card-text mb-2">
+                      <i class="bi bi-geo-alt"></i> {{ place.properties.address_line1 }}
+                    </p>
+                    <p class="card-text text-muted small">
+                      <i class="bi bi-signpost"></i> {{ place.properties.distance | number:'1.0-0' }} meters away
+                    </p>
+                  </div>
+                  <button class="btn btn-outline-primary btn-sm direction-btn" 
+                          (click)="$event.stopPropagation(); openDirections(place)">
+                    <i class="bi bi-compass"></i> Directions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right section (30%) - Map -->
+      <div class="col-lg-5 map-column">
+        <div class="map-container card" id="map"></div>
+      </div>
+    </div>
+  </div>
+</div>

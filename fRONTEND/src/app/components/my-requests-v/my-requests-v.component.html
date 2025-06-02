@@ -1,0 +1,224 @@
+<div class="events-container">
+    <div class="container py-4 d-flex flex-column flex-lg-row">
+        <!-- Main Content -->
+        <div class="flex-grow-1 pe-lg-4">
+            <!-- Header Section -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 gap-3">
+                <div class="d-flex align-items-center">
+                    <div class="icon-circle bg-primary-light text-primary me-3">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div>
+                        <h1 class="events-header m-0">My Event Requests</h1>
+                        <p class="text-muted mb-0">Manage all your upcoming events</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary text-white rounded-pill me-2">{{events.length}} Events</span>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                            <li><a class="dropdown-item" href="#">All Events</a></li>
+                            <li><a class="dropdown-item" href="#">Upcoming</a></li>
+                            <li><a class="dropdown-item" href="#">Past</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-4">
+                <i class="fas fa-exclamation-circle me-3 fs-4"></i>
+                <div class="flex-grow-1">{{ errorMessage }}</div>
+                <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="isLoading && events.length === 0" class="text-center py-5">
+                <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading your events...</p>
+            </div>
+
+            <!-- Events Grid -->
+            <div *ngIf="!isLoading" class="row g-4">
+                <!-- Event Cards -->
+                <div *ngFor="let event of events" class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm" [class.border-primary]="selectedEvent?.managedEventId === event.managedEventId">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h3 class="h5 card-title m-0 text-truncate pe-2">
+                                    {{ 'Event #' + event.managedEventId }}
+                                </h3>
+                                <span class="badge rounded-pill" [ngClass]="{
+                                    'badge-confirmed': true,
+                                    'bg-success': isEventActive(event.dateOfEvent),
+                                    'bg-secondary': !isEventActive(event.dateOfEvent)
+                                }">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    {{ isEventActive(event.dateOfEvent) ? 'Confirmed' : 'Completed' }}
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-user me-2 text-muted"></i>
+                                    <span class="text-muted">Customer:</span>
+                                    <span class="ms-2 fw-medium">{{ event.customerId | slice:0:8 }}...</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-calendar-day me-2" [ngClass]="{
+                                        'text-success': isEventSoon(event.dateOfEvent),
+                                        'text-danger': isEventUrgent(event.dateOfEvent),
+                                        'text-muted': !isEventSoon(event.dateOfEvent) && !isEventUrgent(event.dateOfEvent)
+                                    }"></i>
+                                    <span class="text-muted">Event Date:</span>
+                                    <span class="ms-2 fw-medium">{{ formatDate(event.dateOfEvent) }}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock me-2 text-muted"></i>
+                                    <span class="text-muted">Created:</span>
+                                    <span class="ms-2 fw-medium">{{ formatDate(event.createdAt) }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+                                <div>
+                                    <button class="btn btn-sm" 
+                                            [ngClass]="{
+                                                'btn-success': selectedEvent?.managedEventId !== event.managedEventId,
+                                                'btn-outline-success': selectedEvent?.managedEventId === event.managedEventId
+                                            }"
+                                            (click)="openTodoPanel(event)">
+                                        <i class="fas fa-tasks me-1"></i>
+                                        {{ selectedEvent?.managedEventId === event.managedEventId ? 'Managing' : 'Manage' }}
+                                    </button>
+                                </div>
+                                <span class="badge bg-primary-light text-primary rounded-pill">
+                                    {{ getTodoCount(event.managedEventId) }} Tasks
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="events.length === 0 && !isLoading" class="col-12">
+                    <div class="text-center p-5 bg-white rounded-3 shadow-sm">
+                        <i class="fas fa-calendar-times empty-state-icon mb-4" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h3 class="h4 mb-3">No events found</h3>
+                        <p class="text-muted mb-4">You don't have any event requests yet</p>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Event
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Todo Panel (Right Section) -->
+        <div *ngIf="selectedEvent" class="todo-panel mt-4 mt-lg-0 ps-lg-4 border-start-lg">
+            <div class="sticky-top pt-0 pt-lg-3" style="top: 1rem;">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                            <div>
+                                <h3 class="h5 m-0">
+                                    <i class="fas fa-tasks text-primary me-2"></i>
+                                    Todo List
+                                </h3>
+                                <p class="text-muted small mb-0">Event #{{ selectedEvent.managedEventId }}</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" (click)="closeTodoPanel()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <!-- Todo Loading State -->
+                        <div *ngIf="isTodoLoading" class="text-center py-4">
+                            <div class="spinner-grow text-primary" style="width: 2rem; height: 2rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted mt-2">Loading tasks...</p>
+                        </div>
+
+                        <!-- Todo List -->
+                        <div *ngIf="!isTodoLoading && todoItems.length > 0" class="mb-4">
+                            <div *ngFor="let todo of todoItems" 
+                                 class="todo-item d-flex justify-content-between align-items-center p-3 mb-2 rounded-2" 
+                                 [ngClass]="{
+                                    'bg-success-light': todo.completed,
+                                    'bg-light': !todo.completed,
+                                    'border-start border-3 border-danger': isDueSoon(todo.dueDate) && !todo.completed
+                                 }">
+                                <div class="flex-grow-1">
+                                    <div class="todo-description fw-medium" [class.text-decoration-line-through]="todo.completed">
+                                        {{ todo.description }}
+                                    </div>
+                                    <div class="todo-due-date small mt-1" [ngClass]="{
+                                        'text-muted': todo.completed,
+                                        'text-danger': isDueSoon(todo.dueDate) && !todo.completed,
+                                        'text-success': todo.completed
+                                    }">
+                                        <i class="far fa-clock me-1"></i>
+                                        Due: {{ formatDate(todo.dueDate) }}
+                                        <span *ngIf="todo.completed" class="ms-2">
+                                            <i class="fas fa-check-circle me-1"></i>Completed
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch ms-3 flex-shrink-0">
+                                    <input type="checkbox" 
+                                           class="form-check-input" 
+                                           role="switch"
+                                           id="todo-{{todo.managedEventId}}"
+                                           [checked]="todo.completed" 
+                                           (change)="updateTodoStatus(todo)">
+                                    <label class="form-check-label d-none" for="todo-{{todo.managedEventId}}">Toggle completion</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty Todo State -->
+                        <div *ngIf="!isTodoLoading && todoItems.length === 0" class="text-center py-4 mb-4 bg-light rounded-3">
+                            <i class="fas fa-clipboard-list text-muted mb-3" style="font-size: 2rem; opacity: 0.5;"></i>
+                            <p class="text-muted mb-0">No tasks for this event</p>
+                        </div>
+
+                        <!-- Add Todo Button -->
+                        <button class="btn btn-primary w-100 mb-3 d-flex align-items-center justify-content-center" 
+                                (click)="showAddTodoForm = !showAddTodoForm">
+                            <i class="fas fa-plus me-2"></i>
+                            <span>{{ showAddTodoForm ? 'Cancel' : 'Add New Task' }}</span>
+                        </button>
+
+                        <!-- Add Todo Form -->
+                        <div *ngIf="showAddTodoForm" class="card p-3 mb-3 border-0 shadow-sm">
+                            <h5 class="mb-3 text-primary"><i class="fas fa-plus-circle me-2"></i>Add New Task</h5>
+                            <div class="mb-3">
+                                <label for="todoDescription" class="form-label fw-medium">Task Description</label>
+                                <textarea class="form-control" id="todoDescription" rows="2" 
+                                          [(ngModel)]="newTodo.description" 
+                                          placeholder="What needs to be done?"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="todoDueDate" class="form-label fw-medium">Due Date</label>
+                                <input type="datetime-local" class="form-control" id="todoDueDate" 
+                                       [(ngModel)]="newTodo.dueDate"
+                                       [min]="getTodayDate()">
+                            </div>
+                            <button class="btn btn-success w-100" 
+                                    [disabled]="!newTodo.description || !newTodo.dueDate" 
+                                    (click)="addTodoItem()">
+                                <i class="fas fa-save me-2"></i>Save Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

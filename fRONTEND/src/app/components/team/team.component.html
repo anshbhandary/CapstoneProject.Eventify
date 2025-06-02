@@ -1,0 +1,66 @@
+<div class="container py-5 team-section">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary-color animate__animated animate__fadeInDown">Meet Our Team</h2>
+        <p class="lead text-muted animate__animated animate__fadeIn animate__delay-1s">The brilliant minds behind your perfect event experience</p>
+        <div class="divider mx-auto bg-primary-color animate__animated animate__fadeIn animate__delay-1s"></div>
+    </div>
+  
+    <div class="row justify-content-center g-4 mt-5">
+        <!-- Vishnu Card -->
+        <div class="col-lg-4 col-md-6 text-center animate-on-scroll">
+            <div class="card shadow border-0 h-100 team-card">
+                <div class="card-body p-4">
+                    <div class="position-relative mb-4">
+                        <img src="https://imgs.search.brave.com/Q_ezgfpJbHVyYFbhAGOt73oeQd7n6FbnnDSu0yzmhHM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly92YXJp/ZXR5LmNvbS93cC1j/b250ZW50L3VwbG9h/ZHMvMjAyMy8wMy9K/b2huLVdpY2stMy5q/cGc_dz0xMDAwJmg9/NTYyJmNyb3A9MQ" class="card-img-top rounded-circle mb-3">
+                        <div class="social-links">
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fab fa-github"></i></a>
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                    <h4 class="card-title fw-bold mb-2">Vishnu</h4>
+                </div>
+            </div>
+        </div>
+  
+        <!-- Ansh Card -->
+        <div class="col-lg-4 col-md-6 text-center animate-on-scroll">
+            <div class="card shadow border-0 h-100 team-card">
+                <div class="card-body p-4">
+                    <div class="position-relative mb-4">
+                        <img src="https://imgs.search.brave.com/CZe9cIPXCQ1BSSLML6t6at4qFqR-iCv0aLsVvhXv6dU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzJmL2Iz/LzQ4LzJmYjM0ODli/MzNkYzVkMDgwMWZh/OTk5Y2MyNjU1NjYy/LmpwZw" class="card-img-top rounded-circle mb-3">
+                        <div class="social-links">
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fab fa-github"></i></a>
+                            <a href="#" class="btn btn-sm btn-primary rounded-circle mx-1"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                    <h4 class="card-title fw-bold mb-2">Ansh</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="text-center mt-5 animate__animated animate__fadeIn animate__delay-2s">
+        <div class="divider mx-auto bg-primary-color mb-4"></div>
+        <h4 class="mb-4">Our Capstone Journey</h4>
+        <p class="max-width-700 mx-auto">From concept to deployment, we've combined our diverse skills to create an event management platform that bridges the gap between customers and vendors, making event planning seamless and efficient.</p>
+    </div>
+  </div>
+
+  <script>
+    // Intersection Observer for scroll animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {threshold: 0.1});
+    
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    });
+    </script>

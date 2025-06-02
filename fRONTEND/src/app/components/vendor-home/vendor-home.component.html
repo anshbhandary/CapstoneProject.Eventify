@@ -1,0 +1,201 @@
+<div class="vendor-portal-container">
+  <!-- Main Content Area -->
+  <div class="main-content" [class.details-open]="selectedRequest">
+    <!-- Requests List Section -->
+    <div class="requests-section">
+      <div class="header">
+        <h1 class="title">Vendor Portal</h1>
+        <p class="subtitle">New service requests from customers</p>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="filters-container">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search requests..." 
+                 [(ngModel)]="searchTerm" (input)="applyFilters()">
+        </div>
+        <div class="sort-filter">
+          <select class="form-select" [(ngModel)]="sortBy" (change)="onSortChange()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-state">
+        <div *ngFor="let _ of skeletonArray" class="request-card-skeleton">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line long"></div>
+        </div>
+      </div>
+
+      <!-- Requests List -->
+      <div *ngIf="!isLoading" class="requests-list">
+        <div *ngFor="let request of filteredRequests" 
+             class="request-card" 
+             (click)="viewRequestDetails(request)"
+             [class.active]="selectedRequest?.requestId === request.requestId">
+          <div class="card-header">
+            <h3>Request #{{request.requestId}}</h3>
+            <span class="status-badge" [ngClass]="{
+              'pending': request.status === 'Pending',
+              'accepted': request.status === 'Accepted',
+              'rejected': request.status === 'Rejected'
+            }">
+              {{request.status}}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="customer-info">
+              <i class="bi bi-person"></i>
+              <span>Customer ID: {{request.customerId}}</span>
+            </div>
+            <div class="event-info">
+              <i class="bi bi-calendar-event"></i>
+              <span>Event: {{request.eventRequirementId}}</span>
+            </div>
+            <div class="request-date">
+              <i class="bi bi-clock"></i>
+              <span>{{request.requestedAt | date:'medium'}}</span>
+            </div>
+          </div>
+          <div class="card-actions" *ngIf="request.status === 'Pending'">
+            <button class="btn-accept" 
+                    (click)="acceptRequest(request); $event.stopPropagation()"
+                    [disabled]="processingRequestId !== null">
+              <i class="bi bi-check-circle"></i> 
+              {{processingRequestId === request.requestId ? 'Processing...' : 'Accept'}}
+            </button>
+            <button class="btn-reject" 
+                    (click)="rejectRequest(request); $event.stopPropagation()"
+                    [disabled]="processingRequestId !== null">
+              <i class="bi bi-x-circle"></i> 
+              {{processingRequestId === request.requestId ? 'Processing...' : 'Reject'}}
+            </button>
+          </div>
+          <div class="card-actions" *ngIf="request.status === 'Accepted'">
+            <button class="btn-accepted" disabled>
+              <i class="bi bi-check-circle-fill"></i> Accepted
+            </button>
+          </div>
+          <div class="card-actions" *ngIf="request.status === 'Rejected'">
+            <button class="btn-rejected" disabled>
+              <i class="bi bi-x-circle-fill"></i> Rejected
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="filteredRequests.length === 0" class="empty-state">
+          <i class="bi bi-inbox"></i>
+          <p>No requests available</p>
+          <button class="btn-refresh" (click)="fetchServiceRequests()">
+            <i class="bi bi-arrow-repeat"></i> Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request Details Section -->
+    <div class="details-section" *ngIf="selectedRequest">
+      <div class="details-header">
+        <h2>Request Details</h2>
+        <button class="btn-close" (click)="selectedRequest = null">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div *ngIf="detailsLoading" class="details-loading">
+        <div class="spinner"></div>
+        <p>Loading details...</p>
+      </div>
+
+      <div *ngIf="!detailsLoading" class="details-content">
+        <div class="details-card">
+          <div class="card-title">
+            <i class="bi bi-person"></i>
+            <h3>Customer Information</h3>
+          </div>
+          <div class="card-details" *ngIf="customerDetails">
+            <div class="detail-item">
+              <span class="detail-label">Name:</span>
+              <span class="detail-value">{{customerDetails.result.customerName}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Phone:</span>
+              <span class="detail-value">{{customerDetails.result.phoneNumber}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Address:</span>
+              <span class="detail-value">{{customerDetails.result.address}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-card">
+          <div class="card-title">
+            <i class="bi bi-calendar-event"></i>
+            <h3>Event Details</h3>
+          </div>
+          <div class="card-details" *ngIf="eventDetails">
+            <div class="detail-item">
+              <span class="detail-label">Event Type:</span>
+              <span class="detail-value">{{ eventDetails.result.eventType }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Location:</span>
+              <span class="detail-value">{{ eventDetails.result.location }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Date:</span>
+              <span class="detail-value">{{ eventDetails.result.eventDate | date:'fullDate' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Guests:</span>
+              <span class="detail-value">{{ eventDetails.result.numberOfGuests }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Budget:</span>
+              <span class="detail-value">₹{{ eventDetails.result.budget | number }}</span>
+            </div>
+            <div class="detail-item full-width" *ngIf="eventDetails.result.specialRequests">
+              <span class="detail-label">Special Requests:</span>
+              <div class="detail-text">{{ eventDetails.result.specialRequests }}</div>
+            </div>
+            <div class="detail-item full-width" *ngIf="eventDetails.result.description">
+              <span class="detail-label">Description:</span>
+              <div class="detail-text">{{ eventDetails.result.description }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-actions" *ngIf="selectedRequest.status === 'Pending'">
+          <button class="btn-accept" 
+                  (click)="acceptRequest(selectedRequest)"
+                  [disabled]="processingRequestId !== null">
+            <i class="bi bi-check-circle"></i> 
+            {{processingRequestId === selectedRequest.requestId ? 'Processing...' : 'Accept Request'}}
+          </button>
+          <button class="btn-reject" 
+                  (click)="rejectRequest(selectedRequest)"
+                  [disabled]="processingRequestId !== null">
+            <i class="bi bi-x-circle"></i> 
+            {{processingRequestId === selectedRequest.requestId ? 'Processing...' : 'Reject Request'}}
+          </button>
+        </div>
+        <div class="details-actions" *ngIf="selectedRequest.status === 'Accepted'">
+          <button class="btn-accepted" disabled>
+            <i class="bi bi-check-circle-fill"></i> Request Accepted
+          </button>
+        </div>
+        <div class="details-actions" *ngIf="selectedRequest.status === 'Rejected'">
+          <button class="btn-rejected" disabled>
+            <i class="bi bi-x-circle-fill"></i> Request Rejected
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

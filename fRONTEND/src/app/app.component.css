@@ -1,0 +1,11 @@
+/* Ensures space for fixed navbar */
+.page-content {
+    padding-top: 80px; /* Adjust based on your navbar height */
+  }
+  
+  /* Responsive padding for smaller screens */
+  @media (max-width: 768px) {
+    .page-content {
+      padding-top: 90px;
+    }
+  }

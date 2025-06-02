@@ -1,0 +1,25 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.788); /* Semi-transparent black */
+  transition: background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(0, 0, 0, 0.8); /* Slightly darker on scroll if you want */
+}
+
+.navbar-nav .nav-link {
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-color);
+}
+
+.btn-outline-light:hover {
+  background-color: white;
+  color: black;
+}

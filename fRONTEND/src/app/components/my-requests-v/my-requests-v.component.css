@@ -1,0 +1,231 @@
+.events-container {
+    background-color: var(--light-bg);
+    min-height: calc(100vh - 56px);
+    padding: 2rem 0;
+    font-family: var(--font-family);
+  }
+  
+  .events-header {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .events-header::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 50px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+  }
+  
+  .card {
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    border: none;
+    background-color: var(--card-bg);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: var(--transition);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+  }
+  
+  .card:hover::before {
+    width: 6px;
+    background-color: var(--accent-color);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-title {
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .badge {
+    font-weight: 500;
+    padding: 0.4em 0.75em;
+    font-size: 0.75em;
+    letter-spacing: 0.5px;
+  }
+  
+  .badge-confirmed {
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #38b000;
+  }
+  
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: var(--transition);
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-outline-success {
+    color: var(--success-color);
+    border-color: var(--success-color);
+  }
+  
+  .btn-outline-success:hover {
+    background-color: var(--success-color);
+    color: white;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+  
+  .empty-state {
+    color: var(--text-muted);
+  }
+  
+  .empty-state-icon {
+    font-size: 4rem;
+    color: var(--primary-light);
+    opacity: 0.5;
+  }
+  
+  /* Todo Panel Styles */
+  .todo-panel {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: none;
+    transition: var(--transition);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+    padding: 20px;
+  }
+  
+  .todo-item {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background-color: var(--light-bg);
+    transition: var(--transition);
+    border-left: 3px solid var(--primary-light);
+  }
+  
+  .todo-item:hover {
+    background-color: #f0f4ff;
+    border-left-color: var(--primary-color);
+  }
+  
+  .todo-item.completed {
+    opacity: 0.8;
+    border-left-color: var(--success-color);
+  }
+  
+  .todo-item.completed .todo-description {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  
+  .todo-description {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  
+  .todo-due-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  
+  .custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid var(--primary-light);
+    appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .custom-checkbox:checked {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Form Styles */
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 0.75rem;
+    transition: var(--transition);
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .todo-panel {
+      position: static;
+      width: 100% !important;
+      margin-top: 2rem;
+      margin-left: 0 !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .events-container {
+      padding: 1.5rem 0;
+    }
+    
+    .card-body {
+      padding: 1.25rem;
+    }
+    
+    .events-header {
+      font-size: 1.75rem;
+    }
+  }

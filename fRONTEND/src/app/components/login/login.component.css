@@ -1,0 +1,69 @@
+
+
+h1,h2{
+  color: var(--primary-text-color);
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+input::placeholder {
+  color: var(--text-muted-color);
+}
+
+/* Background for right section */
+.custom-bg {
+  background-color: var(--primary-color) !important;
+  /* background-color: antiquewhite; */
+}
+
+/* Input Icon Color */
+.custom-icon {
+  color: var(--primary-color);
+}
+
+/* Underline Style Input */
+.custom-input {
+  border-bottom: var(--input-border) !important;
+  border-radius: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+/* Buttons */
+.custom-btn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+}
+
+/* Links */
+.custom-link {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.custom-link:hover {
+  text-decoration: underline;
+}
+
+/* Right Image Section Card */
+.card-section {
+  margin: 1.5%;
+  border-radius: 20px;
+  background-color: var(--primary-color);
+  /* background-color: antiquewhite; */
+  padding: 20px;
+  width: 95%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--box-shadow);
+  color: var(--white);
+  text-align: center;
+}
